@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { createGoogleCalendarEvent } from "@/lib/calendar";
-import { parseNaturalLanguageEvent } from "@/lib/mistral";
+import { parseNaturalLanguageSchedule } from "@/lib/mistral";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -42,21 +42,37 @@ export async function POST(req: Request) {
 
   try {
     const nowIso = new Date().toISOString();
-    const parsed = await parseNaturalLanguageEvent(
+    const events = await parseNaturalLanguageSchedule(
       mistralKey,
       text,
       timezone,
       nowIso
     );
-    const created = await createGoogleCalendarEvent(
-      session.accessToken,
-      parsed
-    );
+
+    const created: Array<{
+      title: string;
+      htmlLink: string | null;
+      id: string | null;
+    }> = [];
+
+    for (const ev of events) {
+      const data = await createGoogleCalendarEvent(
+        session.accessToken,
+        ev,
+        timezone
+      );
+      created.push({
+        title: ev.title,
+        htmlLink: data.htmlLink ?? null,
+        id: data.id ?? null,
+      });
+    }
+
     return NextResponse.json({
       ok: true,
-      event: parsed,
-      htmlLink: created.htmlLink ?? null,
-      id: created.id ?? null,
+      count: created.length,
+      events: created,
+      htmlLink: created[0]?.htmlLink ?? null,
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unknown error";

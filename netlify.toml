@@ -1,5 +1,8 @@
 [build]
   command = "npm run build"
+  # Must be `.next`, not the repo root — otherwise @netlify/plugin-nextjs errors:
+  # "publish directory cannot be the same as the base directory"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"

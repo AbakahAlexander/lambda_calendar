@@ -26,19 +26,23 @@ export default function Home() {
         ok?: boolean;
         error?: string;
         htmlLink?: string | null;
-        event?: { title: string; start: string; end: string };
+        count?: number;
+        events?: Array<{ title: string; htmlLink?: string | null }>;
       };
       if (!res.ok) {
         setMessage({ type: "err", text: data.error ?? "Request failed" });
         return;
       }
-      const link = data.htmlLink;
-      const ev = data.event;
+      const n = data.count ?? data.events?.length ?? 1;
+      const link = data.htmlLink ?? data.events?.[0]?.htmlLink;
       setMessage({
         type: "ok",
-        text: link
-          ? `Created “${ev?.title ?? "event"}”. Open in Calendar.`
-          : `Created “${ev?.title ?? "event"}”.`,
+        text:
+          n > 1
+            ? `Created ${n} calendar events.`
+            : link
+              ? `Created “${data.events?.[0]?.title ?? "event"}”. Open in Calendar.`
+              : `Created “${data.events?.[0]?.title ?? "event"}”.`,
       });
       if (link) {
         window.open(link, "_blank", "noopener,noreferrer");

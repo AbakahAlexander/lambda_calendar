@@ -21,7 +21,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 1. Push this repo to GitHub/GitLab/Bitbucket.
 2. In [Netlify](https://app.netlify.com): **Add new site** → **Import an existing project** → pick the repo.
-3. Build settings are read from `netlify.toml` (`npm run build`, Node 22, `@netlify/plugin-nextjs`).
+3. Build settings are read from `netlify.toml` (`npm run build`, `publish = ".next"`, Node 22, `@netlify/plugin-nextjs`). If the Netlify UI still shows a different publish directory, clear it so `netlify.toml` wins, or match **Publish directory** to `.next`.
 4. **Domain**: **Domain settings** → **Add custom domain** → `certifore.dev` (or a subdomain e.g. `app.certifore.dev`). Netlify will show **DNS records** to add at your registrar (usually A/AAAA for apex or CNAME for subdomain).
 5. Turn on **HTTPS** (Let’s Encrypt) in Netlify once DNS resolves.
 
